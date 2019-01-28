@@ -1,14 +1,14 @@
 \documentclass[a4paper, titlepage]{article}
 \usepackage[utf8]{inputenc}
-\usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{ {images/} }
 \usepackage{xcolor}
+\usepackage{hyperref}
 \hypersetup{
 	colorlinks,
 	linkcolor={red!50!black},
 	urlcolor={blue!80!black}
 }
-\usepackage{graphicx}
-\graphicspath{ {images/} }
 \title{Tom's Git Guide}
 \author{Tom Schwarz, Ben Schwarz}
 \date{Janurary 2019\\v1.A} %letters for pre-releases, .0 for main release, .1+ for post-updates
@@ -24,8 +24,10 @@ This guide was written to explain how to use git (and GitHub) quickly and easily
 \end{abstract}
 
 \section{Solving merge conflicts}
+\label{sec:solving_merge_conflicts}
 
 \section{Branching \& Pull Request Workflow}
+\label{sec:branching_pull_request_workflow}
 This explains a simple workflow, but in extreme detail. A quick outline of this workflow:
 \begin{enumerate}
 	\item Create a branch and work on your new changes there
@@ -33,7 +35,9 @@ This explains a simple workflow, but in extreme detail. A quick outline of this 
 	\item Review \& approve the pull request, making changes as necessary
 	\item Delete the branch
 \end{enumerate}
+
 \subsection{Creating a branch}
+\label{sec:BPRW_creating_branch}
 \begin{enumerate}
 	\item Make sure your git repo is up to date with origin (ie Github) - either by running ``git pull'' or in the GUI clicking the ``Fetch origin'' button
 	\item Create the branch by running ``git checkout -b your-branch-name'' or in the GUI going ``Branch \textgreater New Branch'' (also available from the ``current branch'' button next to fetch origin).
@@ -45,21 +49,65 @@ This explains a simple workflow, but in extreme detail. A quick outline of this 
 		\caption{The publish branch button in the GUI}
 	\end{figure}
 	\item Now you can start working on your feature, updating code, making commits and pushing them up to Github as normal!
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.75\textwidth]{2modified-file}
+		\caption{These important files have been modified (\&commited) in the branch}
+	\end{figure}
 \end{enumerate}
 
 \subsection{Creating the pull request}
-temp
+\label{BPRW_creating_pull_request}
+\begin{enumerate}
+	\item First, we must encorporate any changes that have been made to master while we have been working on our branch.
+	\begin{enumerate}
+		\item Update the local copy of master using ``git checkout master'' and ``git pull'' or in the GUI clicking the ``Fetch origin'' button
+		\item Next, merge these changes into your branch by checking out your feature branch and running ``git merge master'' or in the GUI going ``Branch \textgreater Update from master''. You may need to resolve merge conflicts - if so, see the \hyperref[sec:solving_merge_conflicts]{Solving merge conflicts} section.
+	\end{enumerate}
+	\item sync your merge changes with origin (``git push'' or the sync button)
+	\item Go to the github website for the repository, changing to your feature branch
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{3github-website}
+		\caption{Note that we have selected the repository, and the feature branch}
+	\end{figure}
+	\item Create the pull requst
+	\begin{enumerate}
+		\item Click on the ``pull request'' button
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{4start-pull-request}
+			\caption{Click the ``pull request'' button to create the pull request}
+		\end{figure}
+		\item Check the branches are correct (master on left, feature branch on right)
+		\item create a helpful title and comment
+		\item Review the code changes shown below
+		\item Create the pull request
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{5create-pull-request}
+			\caption{Do the things}
+		\end{figure}
+	\end{enumerate}
+	\item Now, just get a programming leader to review your pull request!
+\end{enumerate}
 
 \subsection{Reviewing the pull request}
-temp
+\label{BPRW_reviewing_pull_request}
+
+	
+
 
 \subsubsection{Making changes}
+\label{BPRW_RPW_making_changes}
 temp
 
 \subsubsection{Approving the pull request}
+\label{BPRW_RPW_approving_pull_request}
 temp
 
 \subsection{cleanup}
+\label{BPRW_cleanup}
 temp
 
 \end{document}
