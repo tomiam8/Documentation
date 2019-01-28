@@ -1,5 +1,8 @@
-\documentclass[a4paper, titlepage]{article}
+\documentclass[11pt, titlepage]{article}
+\usepackage[a4paper, total={150mm, 260mm}]{geometry}
 \usepackage[utf8]{inputenc}
+\usepackage{subfigure}
+\usepackage{float}
 \usepackage{graphicx}
 \graphicspath{ {images/} }
 \usepackage{xcolor}
@@ -10,7 +13,7 @@
 	urlcolor={blue!80!black}
 }
 \title{Tom's Git Guide}
-\author{Tom Schwarz, Ben Schwarz}
+\author{Tom Schwarz\thanks{with contributions from Ben Schwarz}}
 \date{Janurary 2019\\v1.A} %letters for pre-releases, .0 for main release, .1+ for post-updates
 
 \begin{document}
@@ -43,15 +46,15 @@ This explains a simple workflow, but in extreme detail. A quick outline of this 
 	\item Create the branch by running ``git checkout -b your-branch-name'' or in the GUI going ``Branch \textgreater New Branch'' (also available from the ``current branch'' button next to fetch origin).
 	\item Choose a suitable branch name, compliant with relevant conventions/guidelines - it should be short and descriptive. You should create a new branch for every self-contained feature - do NOT create large monolithic branches for miscellaneous updates; even if it means having a branch with just one commit.
 	\item Add this branch to origin either by running ``git push --set-upstream origin your-branch-name'' (the extra option connects your new branch to a new reflected branch in origin) or hitting the ``Publish branch'' button in the GUI.
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\textwidth]{1publish-branch}
+		\includegraphics[width=\textwidth]{BPRW/1publish-branch}
 		\caption{The publish branch button in the GUI}
 	\end{figure}
 	\item Now you can start working on your feature, updating code, making commits and pushing them up to Github as normal!
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.75\textwidth]{2modified-file}
+		\includegraphics[width=0.75\textwidth]{BPRW/2modified-file}
 		\caption{These important files have been modified (\&commited) in the branch}
 	\end{figure}
 \end{enumerate}
@@ -66,26 +69,26 @@ This explains a simple workflow, but in extreme detail. A quick outline of this 
 	\end{enumerate}
 	\item sync your merge changes with origin (``git push'' or the sync button)
 	\item Go to the github website for the repository, changing to your feature branch
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{3github-website}
+		\includegraphics[width=0.8\textwidth]{BPRW/3github-website}
 		\caption{Note that we have selected the repository, and the feature branch}
 	\end{figure}
 	\item Create the pull requst
 	\begin{enumerate}
 		\item Click on the ``pull request'' button
-		\begin{figure}
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=\textwidth]{4start-pull-request}
+			\includegraphics[width=0.8\textwidth]{BPRW/4start-pull-request}
 			\caption{Click the ``pull request'' button to create the pull request}
 		\end{figure}
 		\item Check the branches are correct (master on left, feature branch on right)
 		\item create a helpful title and comment
 		\item Review the code changes shown below
 		\item Create the pull request
-		\begin{figure}
+		\begin{figure}[H]
 			\centering
-			\includegraphics[width=\textwidth]{5create-pull-request}
+			\includegraphics[width=\textwidth]{BPRW/5create-pull-request}
 			\caption{Do the things}
 		\end{figure}
 	\end{enumerate}
@@ -94,20 +97,91 @@ This explains a simple workflow, but in extreme detail. A quick outline of this 
 
 \subsection{Reviewing the pull request}
 \label{BPRW_reviewing_pull_request}
-
-	
-
+Note that this subsection is only intended for those reviewing the pull request (i.e. doing the code review) - but it can still be useful to read it anyway!
+\begin{enumerate}
+	\item Select, open and view the pull request by clicking ``Pull Requests'' (in the top bar, right below the repository name) \textgreater The pull request name:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/6view-pull-request}
+		\caption{Yay do the things}
+	\end{figure}
+	\item Click ``Files changed'' to view the code updates in the pull request, and begin the review.
+	\item Click individual lines (near the line numbers) to add comments to individual lines of the file, and click ``review changes'' to make a general comment. You can change the ``Diff settings'' to see more of the file. For individual line comments you can make code suggestions for very simple changes, that can be easily accepted by the pull request proposer. For the general comment you can just make a comment, accept the pull request, or request code changes. For this example, we'll be demonstrating asking for additonal changes.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/7code-review}
+		\caption{Note how the code has been reviewed}
+	\end{figure}
+\end{enumerate}
 
 \subsubsection{Making changes}
 \label{BPRW_RPW_making_changes}
-temp
+This section details how to edit/update the pull request, eg after the code reviewer has requested changes
+\begin{enumerate}
+	\item Open the pull request and view the comment
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/8view-comment}
+		\caption{Look at all these lovely comments. Also, note how you can commit the code suggestion instantly!(You will need to re-pull if you do this)}
+	\end{figure}
+	\item Simply create a new commit to the feature branch, and push it to github. Notify the code-reviewer that you have met their tyrannical demands.
+\end{enumerate}
 
 \subsubsection{Approving the pull request}
 \label{BPRW_RPW_approving_pull_request}
-temp
+Again this is for the code reviewer!
+\begin{enumerate}
+	\item Open up the code review on Github.com
+	\item View the changes as before (or, you can view the individual commit to see what changed) and then approve the changes, or create an additional request for changes as before.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/9approve-changes}
+		\caption{Click the approve changes button to approve the changes}
+	\end{figure}
+	\item Then click ``merge'' (the big green button) to merge the pull request. You can choose between creating a new ``merge'' commit, squashing the commits into a mega-commit or rebasing (append the commits to the end of master).
+\end{enumerate}
 
 \subsection{cleanup}
 \label{BPRW_cleanup}
-temp
+\begin{enumerate}
+	\item As you can see, we have finished the merge and master has the new feature! Now however we must go ahead and delete the existing branch.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/10merge-complete}
+		\caption{``I have done the deed. Didst thou not hear a noise?''}
+	\end{figure}
+	\item Click the ``Delete branch'' button on Github to delete the branch there. (You can also use ``git push origin --delete your-branch'' or on Github click ``(number) branches'' button (next to the number of commits), then click the bin icon.)
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/11delete-branch}
+		\caption{``Easily defeat Birnam forest with this one weird trick.''}
+	\end{figure}
+	\item Now delete the branch on your local with ``git branch --delete your-branch'' or in the GUI go ``Branch \textgreater Delete''
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{BPRW/12Delete-branch-github-desktop}
+		\caption{``Don't tell Greenpeace.''}
+	\end{figure}
+\end{enumerate}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{BPRW/13end-result}
+	\caption{``Random monty python refrences counts as growing the (programming) python cult, right?''}
+\end{figure}
+	
+\section{license}
+This document (including the .tex, .pdf, included images and any other directly related files) uses the following modified MIT License:
+
+
+Copyright (c) [2019] [Thomas Schwarz, Benjamin Schwarz for those specifically contributed sections]
+
+
+Permission is hereby granted, free of charge, to any peron obtaining a copy of this document and any associated files (the ``document''), to deal in the document without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the document, and to do so, subject to the following conditions:
+
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the document.
+
+
+THE DOCUMENT IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE DOCUMENT OR THE USE OR DEALINGS IN THE DOCUMENT. THE USER ACCEPTS ALL RISK FROM USAGE OF THE DOCUMENT.
 
 \end{document}
