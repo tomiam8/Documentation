@@ -21,13 +21,65 @@
 
 \tableofcontents
 
-\renewcommand{\abstractname}{Introduction} %changes the abstract to be called an introduction.
-\begin{abstract}
+\section{Introduction}
 This guide was written to explain how to use git (and GitHub) quickly and easily. While it definitely is not a particularly good guide, I couldn't find one online that explained, practically, how to use git with the right context and simply enough. So I wrote this. For an explanation of how Git works (which you \emph{must} know before you read this (knowing ``git commit'', ``git pull'' and ``git push'' or their equivalent GUI buttons dosen't count)) see \href{https://blog.red-badger.com/2016/11/29/gitgithub-in-plain-english}{Git \& Github in plain english} (seriously - do read it).
-\end{abstract}
 
-\section{Solving merge conflicts}
+\pagebreak
+
+\section{Solving merge conflicts (in VS Code)}
 \label{sec:solving_merge_conflicts}
+Merge conflicts occur when git is trying to merge converged histories, and in the process finds both groups have edited the same file. For example, this can occur when:
+\begin{itemize}
+	\item You run ``git pull'' after you have commited changes to a file, and someone else has commited and pushed different changes to the same file
+	\item You merge a branch back to master, after you changed a file in the branch and someone else changed the same file in master
+	\item You are updating your branch to have new changes from master - ie the reverse of above
+\end{itemize}
+Luckily solving merge conflicts is much less spooky than it appears:
+\begin{enumerate}
+	\item Firstly you will be notified that a merge conflict has occured either by some sort of error message after running ``''git merge conflicting-branch'' that looks like ``CONFLICT (content): Merge conflict in file.txt / Automatic merge failed; fix conflicts and then commit the result.'' or the following error dialog box if using the GUI:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{SMC/1conflict-dialog}
+		\caption{The horror! The horror!}
+	\end{figure}
+	\item To solve the conflict, simply open the conflicting file(s) in your favourite text editor, and make the file look exactly how you want it. In this case we will use Visual Studio Code, but any text editor works:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{SMC/2open-file}
+		\caption{Open the file in VS Code by going File \textgreater Open File... and selecting it. It can be any type of (text) file - not necessarily just .java or whatever you commonly edit in VS Code.}
+	\end{figure}
+	The general structure of the file will be:
+	\begin{table}[H]
+		\begin{tabular}{p{0.35\linewidth} p{0.65\linewidth}}
+		Preceding context code & \\
+		 $<<<<<<<$ HEAD & This indicates the start of the conflicting section, and that this first section corresponds to the HEAD commit - ie your commit. VS Code has helpfully labelled this as the (Current Change). \\
+		  Blah Blah text &  \\
+		 =======& This indicates the dividor between your code, and the alternative commit code \\
+		 Blah Blah conflicting text&  \\
+		 $>>>>>>>$ 123456& This indicates the end of the conflicting section, and gives the reference hash for the alternative commit code. VS Code has helpfully labelled this as the (Incoming Change) \\
+		 Ending context code & 
+		\end{tabular}
+	\end{table}
+	Here is an example file:
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{SMC/3conflicted-file}
+		\caption{The opened file. VS Code has added the colouring and light grey help text}
+	\end{figure}
+	\item Now edit the file to look how you want. You can use VS Code's handy buttons to choose the current change or incoming change or both changes (or get a side-by-side diff). You can also just ignore it all together and touch up the file yourself. Generally I click ``Accept Both Changes'' to have it remove the \textless, = and \textgreater stuff and then fix up the code myself - but do what makes sense in the situation
+	
+	
+Note: Often, merge conflicts are minor issues that you can just quicly touch up. However, if you don't communicate with other team members its possible that you can have an actual logical merge conflict -eg you both edited the same function to do something you want. In this case you will need to re-code the function, and the code that uses it, to solve the conflict (even though git might say its been solved before then, you still need to update the dependant code)
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{SMC/4merge-resolved}
+		\caption{Note that the merge has been fully resolved, and the file looks exactly as we want it.}
+	\end{figure}
+	\item Save and test your code. (This is a very important, non-skippable step. Don't skip it.)
+	\item Run ``git commit'' to finish the merge, or go back to the GUI and click ``commit merge'' (Alternatively you can run git merge --abort to stop merging, and return the branch to how it was before you tried to merge).
+\end{enumerate}
+For more help on solving merge conflicts, see this \href{https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts}{Atlassian Git merge conflicts} article.
+
 
 \section{Branching \& Pull Request Workflow}
 \label{sec:branching_pull_request_workflow}
