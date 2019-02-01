@@ -21,36 +21,136 @@
 \tableofcontents
 
 \section{Introduction}
-Introduction goes here
+\label{sec:introduction}
+When you are using a RPi for the first time, you are suddenly exposed to lots of new things (like linux, a tiny computer thats less hand-holdey then normal, the terminal, SSH \& VNC, images \& partitions, OpenCV, compilling stuff yourself) on top of the actual Computer Vision program. Although lots of guides (and probably better guides) exist online, lot's of these things are don't-know-that-you-don't-know, or use terminology or featuers your not aware exist, or assume pre-requisite knowledge. This guide tries to compile all that information into what source that takes you from start to finish while not hiding or lacking in-depth details. I hope it's useful!
+
+\section{Contributing}
+\label{sec:contributing}
+If you find incorrect information, outdated information, poorly written sections or simply have an idea for a useful new section, please let me know or contribute! Feel free to create any issues or pull requests at the \href{https://github.com/tomiam8/Documentation}{Github}. 
+
 \pagebreak
 
 \section{What is a raspberry pi?}
+\label{sec:What-RPI}
+A raspberry pi is a full-fledged computer on a chip about the size of a credit card, that costs around AUD\$50. See \href{www.raspberrypi.org}{raspberrypi.org} for more.
 \subsection{Like, seriously, what is it?}
+\label{sec:WRPI_hardware}
+So firstly there are several different types of Raspberry Pi's including smaller ones with less ports \& connections, less powerful ones, older ones, and ones that are just a flat chip to be integrated into other circuitry (which the limelight uses).
+For FRC, you want to use the Raspberry Pi Model B, and at least version 2, ideally 3 or the 3 B+.
+Here are the specs taken from the \href{www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/}{Raspberry Pi 3 model B+ website}:
+\begin{itemize}
+	\item Broadcom BCM2837B0, Cortex-A53 (ARMv8) 64-bit SoC @ 1.4GHz
+	\item 1GB LPDDR2 SDRAM
+	\item 2.4GHz and 5GHz IEEE 802.11.b/g/n/ac wireless LAN, Bluetooth 4.2, BLE
+	\item Gigabit Ethernet over USB 2.0 (maximum throughput 300 Mbps)
+	\item Extended 40-pin GPIO header
+	\item Full-size HDMI
+	\item 4 USB 2.0 ports
+	\item CSI camera port for connecting a Raspberry Pi camera
+	\item DSI display port for connecting a Raspberry Pi touchscreen display
+	\item 4-pole stereo output and composite video port
+	\item Micro SD port for loading your operating system and storing data
+	\item 5V/2.5A DC power input
+	\item Power-over-Ethernet (PoE) support (requires separate PoE HAT)
+\end{itemize}
+Here are some more details on some important hardware aspects, particularly for FRC:
+\subsubsection{Power}
+\label{sec:WRPI_hardware_power}
+Can be powered either through the MicroUSB port, the GPIO pins, or Power over Ethernet. Either way the Pi needs around 5V, and 2A, which can be gotten from the 5V 2A port of the VRM.
+Power - either through the MicroUSB port or the GPIO pins (or PoE), plugged into the 5V 2A port of the VRM. The Pi itself, under normal conditions, only needs 1A to run - but other peripheals (like cameras, keyboards, HDMI, etc.) can require lots of power - 2A is plenty of power unless your using excessive and ridiculous peripheals. If you are, you may need to use a powered USB hub.
+Details on the different powering methods:
+\begin{itemize}
+	\item MicroUSB - normal way you'd power the Pi. When working on the Pi off-robot, using the MicroUSB in a high(>1A, higher if using peripheals like USB cameras) amperage transformer is best. As the MicroUSB port has voltage-protection, I perfer this method. To plug it into the RPi, you will need to cut off the USB end of a USB-MicoUSB cable, find the power cables (hopefully it will follow this \href{https://turbofuture.com/computers/Color-Coded-Wire-inside-the-USB}{color convention} ) and connect them to the VRM.
+	\item GPIO pins - as the GPIO bypasses the voltage protection, it's not recommended, but it can be done. See google to find results (or use this one I found through google - \href{https://raspberrypi.stackexchange.com/questions/1617/how-do-i-supply-power-through-the-gpio}{How do I supply power thorugh the GPIO? on RaspberryPi.stackexchange.com}
+	\item Power over Ethernet - later Pi's using a HAT (GPIO addon) can do this... but again like the GPIO, why, when you can just cut apart a MicroUSB cable and connect it to the VRM in ~5min?
+\end{itemize}
+In summary - use a cut apart MicroUSB cable connected to the VRM 2A 5V port.
+\subsubsection{MicroSD card port}
+\label{sec:WRPI_hardware_microSD}
+This is essentially the Pi's hard drive, with the Pi itself having basically no persistent memory (The SD card literally stores most of the firmware). The only thing the Pi without the SD card knows is how to read a FAT32 partition, and the location on the SD card of its bootloader. If you want you can google more to find out how the Pi boots).
+Convinently this means its essentially impossible to brick a Pi from software (you can if you mess up powering it with the GPIO), as you can always just reinstall a fresh image onto the SD card.
+The SD card normally has two partitions on it - a FAT32 partition, with the files for booting, and an ``ext4'' (linux) partition which stores the pi's normal files. Note that windows cannot read ext4 - if you plug the MicroSD card into a computer it will tell you to format that partition. Don't format that partition.
+\paragraph{Background on partitions and images}
+\label{sec:WRPI_hardware_microSD_partitions}
+Partitions organize/define the structure of a storage device. Most devices will simply have one large partition, but it is possible to have multiple - for example if you want to install multiple OS's, you would create multiple partitions to store each OS. I would recommend being very careful with partitons as its possible to delete all your data, or screw up your boot information.
+
+Images are files that store the entire contents of a storage device, literally recording all the 1's and 0's. This is convinent because it lets you back up the Pi SD card by just copying it exactly onto a computer, including the partition structure, and the details of partitons that windows can't read. More details on how to make images, and resize them, is in the \hyperref[sec:URPI_backup_images]{Using a raspberry pi : Creating backup images} section.
+
 \subsection{What (OS) does it run?}
+\label{sec:WRPI_OS}
+The Pi runs Raspbian, which is a modified version of the Debian distribution of linux.
+\textbf{What does this mean?}
+\emph{The short version} contains every bit of info you need to know to use a raspberry pi, or if anything a bit too much. \emph{The long version} is an excuse for me to write a bunch of stuff in a poorly-written format that may be wrong and I really should have just left as an exercise in googling for the reader, or at least written succinctly in a formal tone, but alternatively I could just hope no future employers dig too far down into my Github account, and pointlessly delay the release of this guide. So without turning this subsubsection intro into too long of a paragraph, I present: The short version.
+\subsubsection{The short version}
+The short version is - linux is an open-source OS, like Windows and Max OSX. But, unlike Windos and Mac OSX that actually have a lot more things than just an OS (like a fancy GUI desktop and pre-installed software like file browsers, internet browsers, etc.), linux is just the kernel or the core of the OS. There are many distributions of linux, which include the extra OS bits like a desktop (normally), browser, etc. Some distributions include \emph{Ubuntu} (very user-friendly/hand-holdy which is nice), \emph{Debian} (very popular although not as hand-holdey, many other distributions are based off of it), \emph{mint, arch, tails, openSUSE} and many more.
+
+Raspbian is a version of Debian made specifically for the RPi, and is the most common OS for the RPi, although there are other options.
+\subsubsection{The long version}
+\textit{info taken from wikipedia, quora, stackexchange and other random sites google came up with}
+An operating system operates the computer (suprisingly?)
+OS Parts:
+\begin{itemize}
+	\item Kernel - the kernel is a computer program that forms the core of an OS, and includes most of the following parts. It handles memory, programs interaction with different devices and resources, sets up the CPU's state and organizes data writing and reading on file systems.
+	\item Program execution - The kernel will load a program, asign it resources to run and handle its communication with devices.
+	\item Interrupts - an Interrupt is a signal to the CPU from hardware or software that causes the CPU to stop executing a program and swap over to executing the OS, which knows what to do for a given interruption. For example when a key is pressed an interrupt allows the kernel to handle the keystroke by reading it and say passing the keystroke back to the program.
+	\item Modes - Modern CPUs have multiple modes for security reasons. The kernel runs in the most priveleged mode, having access to memory and processor instructions. When the kernel starts a user program it moves the CPU into a lower priveleged mode, restriciting its memory access and instruction set. When an interrupt occurs and the kernel resumes operation, it shifts back into a privileged mode.
+	\item Memory management - the OS both assigns memory space, and manages virtual memory (ie swap files), and can distribute memory across a segmented area.
+	\item File systems - the kernel abstracts reading file strucures so programs dont have to worry about the type of device, its format and the structure of the internel file systems
+\end{itemize}
+Linux handles all of the above (and a few sections I left out... go google, \href{https://en.wikipedia.org/wiki/Operating_system#Components}{Wikipedia - Operating System (Components)} is good).
+
+GNU (stands for ``GNU's not Unix'') includes many convinent programs such as the GNU Compiler Collection (GCC), the GNU C library, a debugger, utilities, the GNOME desktop and the GNU Bash shell (aka the terminal. Like the cmd line but much much much better).
+
+A Linux distribution packages together the Linux kernel, GNU tools and libraries, more additional software (eg a browser), documentation, a window system, a window manager and a desktop environment. (that sentence taken from \href{https://en.wikipedia.org/wiki/Linux_distribution}{wikipedia - Linux distribution} basically verbatim because I'm getting tired and this section is long).
+
+Some distributions include \emph{Ubuntu} (very user-friendly/hand-holdy which is nice), \emph{Debian} (very popular although not as hand-holdey, many other distributions are based off of it), \emph{mint, arch, tails, openSUSE} and many more.
+
+Raspbian is a version of Debian for the Pi and the OS it runs. I normally use ``Raspbian (version) with desktop'' to limit the amount of bloatey software while still having useful things like, you know, a desktop (otherwise your stuck using a terminal 100\% of the time).
 
 \section{Setting up a raspberry pi}
+\label{sec:Setting_up_RPI}
 \subsection{Installing the OS (aka writing the image and what is an image)}
+\label{sec:SURPI_install_OS}
 \subsection{Configuring options}
+\label{sec:SURPI_configure}
 \subsection{Installing OpenCV}
+\label{sec:SURPI_install_opencv}
 \subsection{Alternatives (aka using premade for FRC images)}
+\label{sec:SURPI_setup_alternatives}
 
 \section{Using a raspberry pi}
+\label{sec:Using_RPI}
 \subsection{The terminal}
+\label{sec:URPI_terminal}
 \subsection{working remotely (SSH \& VNC)}
+\label{sec:URPI_working_remotely}
 \subsection{Updating software}
+\label{sec:URPI_updating_software}
 \subsection{Network settings}
+\label{sec:URPI_network_settings}
 \subsection{Running software on boot}
+\label{sec:URPI_running_software_boot}
 \subsection{Turning it off}
+\label{sec:URPI_shutdown}
+\subsection{Creating backup images}
+\label{sec:URPI_backup_images}
 
 \section{Doing Vision Tracking}
+\label{sec:vision_tracking}
 \subsection{What is OpenCV (and how it relates to GRIP and the limelight)}
+\label{sec:VT_what_opencv}
 \subsection{The vision pipeline}
+\label{sec:URPI_vision_pipeline}
 \subsection{Useful OpenCV functions}
+\label{sec:URPI_opencv_functions}
 \subsection{Making it run fast (aka threading/multiprocessing)}
+\label{sec:URPI_run_fast}
 \subsection{Communicating back to the RIO}
+\label{sec:URPI_communication}
 
 	
 \section{license}
+\label{sec:license}
 This document (including the .tex, .pdf, included images and any other directly related files) uses the following modified MIT License:
 
 Copyright (c) 2019 Thomas Schwarz
